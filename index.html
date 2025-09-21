@@ -1226,9 +1226,75 @@
                 const selectedOption = cropSelect.options[cropSelect.selectedIndex];
                 const cropId = selectedOption.dataset.cropId;
                 cropIdInput.value = cropId;
+                
+                // Check if this crop is already registered
+                checkCropAvailability(cropId);
             } else {
                 cropIdInput.value = "";
             }
+        }
+
+        // Function to check if a crop ID is already registered
+        async function checkCropAvailability(cropId) {
+            if (!isContractReady()) {
+                return;
+            }
+            
+            try {
+                const numericId = parseInt(cropId.replace('C', ''));
+                const existingCrop = await contract.methods.getDrugDetails(numericId).call();
+                
+                if (existingCrop && existingCrop[3] !== "0x0000000000000000000000000000000000000000") {
+                    // Crop is already registered
+                    const cropSelect = document.getElementById("cropName");
+                    const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+                    
+                    // Add visual indicator
+                    selectedOption.style.backgroundColor = "#ffebee";
+                    selectedOption.style.color = "#c62828";
+                    selectedOption.title = `Already registered by ${existingCrop[3]}`;
+                    
+                    // Show warning message
+                    const warningDiv = document.getElementById("cropWarning") || createCropWarning();
+                    warningDiv.innerHTML = `
+                        <div style="background: rgba(255, 193, 7, 0.1); padding: 0.5rem; border-radius: 8px; border-left: 4px solid #ffc107; margin-top: 0.5rem;">
+                            <strong>⚠️ Warning:</strong> ${cropId} (${selectedOption.textContent}) is already registered by ${existingCrop[3].slice(0, 10)}...
+                            <br><strong>💡 Tip:</strong> Select a different crop type to register.
+                        </div>
+                    `;
+                    warningDiv.style.display = "block";
+                } else {
+                    // Crop is available
+                    const cropSelect = document.getElementById("cropName");
+                    const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+                    
+                    // Remove visual indicators
+                    selectedOption.style.backgroundColor = "";
+                    selectedOption.style.color = "";
+                    selectedOption.title = "Available for registration";
+                    
+                    // Hide warning
+                    const warningDiv = document.getElementById("cropWarning");
+                    if (warningDiv) {
+                        warningDiv.style.display = "none";
+                    }
+                }
+            } catch (error) {
+                // Crop not found, which means it's available
+                console.log("Crop ID is available for registration");
+            }
+        }
+
+        // Function to create crop warning element
+        function createCropWarning() {
+            const warningDiv = document.createElement("div");
+            warningDiv.id = "cropWarning";
+            warningDiv.style.display = "none";
+            
+            const cropSelect = document.getElementById("cropName");
+            cropSelect.parentNode.insertBefore(warningDiv, cropSelect.nextSibling);
+            
+            return warningDiv;
         }
 
         // Function to generate farmer ID (first 2 initials + last 6 wallet digits)
@@ -1441,6 +1507,31 @@
                 // Convert crop ID to a unique number for smart contract
                 const numericId = parseInt(cropId.replace('C', '')); // Convert C001 to 1, C002 to 2, etc.
                 
+                // Check if crop ID is already registered
+                try {
+                    const existingCrop = await contract.methods.getDrugDetails(numericId).call();
+                    if (existingCrop && existingCrop[3] !== "0x0000000000000000000000000000000000000000") {
+                        document.getElementById("output").innerHTML = `
+                            <div style="background: rgba(220, 53, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #dc3545;">
+                                <h4 style="color: #dc3545; margin: 0 0 1rem 0;">❌ Crop ID Already Registered</h4>
+                                <p><strong>Crop ID ${cropId} (${cropName}) is already registered!</strong></p>
+                                <p><strong>Current Owner:</strong> ${existingCrop[3]}</p>
+                                <p><strong>Current Manufacturer:</strong> ${existingCrop[1]}</p>
+                                <p><strong>Current Batch:</strong> ${existingCrop[2]}</p>
+                                <br>
+                                <p><strong>💡 Solution:</strong> Please select a different crop type from the dropdown above. 
+                                Each crop type has a unique ID, and you can only register each type once.</p>
+                                <p><strong>Available crops:</strong> Try selecting Wheat (C002), Maize (C003), Barley (C004), etc.</p>
+                            </div>
+                        `;
+                        document.getElementById("output").classList.add("error");
+                        return;
+                    }
+                } catch (checkError) {
+                    // Crop not found, which is good - we can proceed
+                    console.log("Crop ID is available for registration");
+                }
+                
                 // Generate farmer ID
                 const farmerId = generateFarmerId(cropManufacturer, userAccount);
                 
@@ -1469,16 +1560,52 @@
                 await contract.methods.registerDrug(numericId, cropName, cropManufacturer, cropBatchNumber)
                     .send({ from: userAccount });
                 
-                document.getElementById("output").innerText = `Crop registered successfully! Crop ID: ${cropId}, Farmer ID: ${farmerId}, Quantity: ${cropQuantity}kg, Price: ₹${cropPrice}`;
+                document.getElementById("output").innerHTML = `
+                    <div style="background: rgba(40, 167, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #28a745;">
+                        <h4 style="color: #28a745; margin: 0 0 1rem 0;">✅ Crop Registered Successfully!</h4>
+                        <p><strong>Crop ID:</strong> ${cropId}</p>
+                        <p><strong>Crop Name:</strong> ${cropName}</p>
+                        <p><strong>Farmer ID:</strong> ${farmerId}</p>
+                        <p><strong>Quantity:</strong> ${cropQuantity}kg</p>
+                        <p><strong>Price:</strong> ₹${cropPrice}</p>
+                        <p><strong>Batch Number:</strong> ${cropBatchNumber}</p>
+                        <p><strong>Owner:</strong> ${userAccount}</p>
+                    </div>
+                `;
                 document.getElementById("output").classList.add("success");
                 
                 // Show QR code generation buttons
                 document.getElementById("generateQRBtn").style.display = "block";
                 document.getElementById("testQRBtn").style.display = "block";
                 
+                showNotification("Crop registered successfully!", "success");
+                
             } catch (error) {
-                document.getElementById("output").innerText = "Error registering crop: " + error.message;
+                console.error("Registration error:", error);
+                let errorMessage = "Error registering crop: ";
+                
+                if (error.message.includes("Drug already registered")) {
+                    errorMessage = `
+                        <div style="background: rgba(220, 53, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #dc3545;">
+                            <h4 style="color: #dc3545; margin: 0 0 1rem 0;">❌ Crop Already Registered</h4>
+                            <p><strong>This crop type has already been registered!</strong></p>
+                            <p><strong>💡 Solution:</strong> Please select a different crop type from the dropdown above.</p>
+                            <p><strong>Available options:</strong> Try Wheat (C002), Maize (C003), Barley (C004), etc.</p>
+                        </div>
+                    `;
+                } else if (error.message.includes("execution reverted")) {
+                    errorMessage += "Transaction failed. The crop may already be registered or there was a contract error.";
+                } else if (error.message.includes("user rejected")) {
+                    errorMessage += "Transaction was cancelled by user.";
+                } else if (error.message.includes("insufficient funds")) {
+                    errorMessage += "Insufficient funds for gas fees.";
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                document.getElementById("output").innerHTML = errorMessage;
                 document.getElementById("output").classList.add("error");
+                showNotification("Failed to register crop", "error");
             }
         }
 
