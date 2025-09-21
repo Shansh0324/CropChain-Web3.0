@@ -35,6 +35,41 @@
       "artifacts": [
         "DrugTraceability"
       ]
+    },
+    "D:\\Stack\\xyz\\Croponchain\\contracts\\CropTraceability.sol": {
+      "lastModificationDate": 1758435195898,
+      "contentHash": "1975a16a38c2803c2145c572af4ba048",
+      "sourceName": "contracts/CropTraceability.sol",
+      "solcConfig": {
+        "version": "0.8.18",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "CropTraceability"
+      ]
     }
   }
 }

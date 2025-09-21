@@ -677,8 +677,11 @@
         <div id="generatedBatch" class="batch-display" style="display: none;"></div>
         
                 <div class="form-group">
-                    <label class="form-label">Batch Number</label>
+                    <label class="form-label">Batch Number <span style="color: #666; font-size: 12px;">(Auto-Generated)</span></label>
                     <input type="text" id="cropBatchNumber" class="form-input" placeholder="Batch Number (auto-generated)" readonly>
+                    <div style="background: rgba(33, 150, 243, 0.1); padding: 0.5rem; border-radius: 8px; border-left: 4px solid #2196f3; margin-top: 0.5rem; font-size: 12px;">
+                        <strong>💡 Automatic Generation:</strong> A unique batch number will be automatically generated when you register the crop. Each registration gets a completely unique identifier.
+                    </div>
                 </div>
         
                 <h3 style="color: #514caf; margin-top: 20px; margin-bottom: 10px;">QR Code Generation</h3>
@@ -751,8 +754,8 @@
                     <div class="card-title">Get Individual Crop Details</div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Crop ID</label>
-                    <input type="number" id="cropIdForDetails" class="form-input" placeholder="Enter Crop ID">
+                    <label class="form-label">Batch Number</label>
+                    <input type="text" id="cropIdForDetails" class="form-input" placeholder="Enter Batch Number (e.g., OD-14-102-190925-A3F9)">
                 </div>
                 <div class="btn-group">
                     <button id="getCropDetailsBtn" class="btn btn-secondary">
@@ -771,8 +774,8 @@
                     <div class="card-title">Transfer Ownership</div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Crop ID</label>
-                    <input type="number" id="transferId" class="form-input" placeholder="Enter Crop ID">
+                    <label class="form-label">Batch Number</label>
+                    <input type="text" id="transferId" class="form-input" placeholder="Enter Batch Number">
                 </div>
                 <div class="form-group">
                     <label class="form-label">New Owner Address</label>
@@ -805,8 +808,8 @@
                     <strong>For current owners:</strong> Update your name or farm name without transferring ownership.
                 </p>
                 <div class="form-group">
-                    <label class="form-label">Crop ID</label>
-                    <input type="number" id="updateNameCropId" class="form-input" placeholder="Enter Crop ID">
+                    <label class="form-label">Batch Number</label>
+                    <input type="text" id="updateNameCropId" class="form-input" placeholder="Enter Batch Number">
                 </div>
                 <div class="form-group">
                     <label class="form-label">New Manufacturer Name</label>
@@ -839,189 +842,445 @@
         }
     </script>
     <script>
-        const contractAddress = "0x65Fd97e0AC9601f7C2f06637B8F33B7C49DB2A07"; 
-        const contractABI = [{
-      "inputs": [],
-      "name": "drugCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "drugs",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "manufacturer",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "batchNumber",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAllRegisteredDrugs",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        }
-      ],
-      "name": "getDrugDetails",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_manufacturer",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_batchNumber",
-          "type": "string"
-        }
-      ],
-      "name": "registerDrug",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_newOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "_newManufacturer",
-          "type": "string"
-        }
-      ],
-      "name": "transferOwnershipWithName",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_newManufacturer",
-          "type": "string"
-        }
-      ],
-      "name": "updateManufacturer",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ];
+        const contractAddress = "0xDb1dEd4afBf9162a53B0B8A4989554943FB755b4"; 
+        const contractABI = [
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "batchNumber",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "cropTypeId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "manufacturer",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "name": "CropRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "batchNumber",
+        "type": "string"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allBatchNumbers",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      }
+    ],
+    "name": "batchExists",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "cropTypeToBatches",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "crops",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "cropTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "manufacturer",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "registrationTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllBatchNumbers",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_cropTypeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBatchesByCropType",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      }
+    ],
+    "name": "getCropByBatch",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "cropTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "manufacturer",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "registrationTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_cropTypeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCropCountByType",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalRegistrations",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_cropTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_manufacturer",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      }
+    ],
+    "name": "registerCrop",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalRegistrations",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_newManufacturer",
+        "type": "string"
+      }
+    ],
+    "name": "transferOwnershipWithName",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_newManufacturer",
+        "type": "string"
+      }
+    ],
+    "name": "updateManufacturer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newPrice",
+        "type": "uint256"
+      }
+    ],
+    "name": "updatePrice",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
 
         let web3;
         let contract;
@@ -1234,7 +1493,7 @@
             }
         }
 
-        // Function to check if a crop ID is already registered
+        // Function to check crop type availability (new contract allows multiple registrations)
         async function checkCropAvailability(cropId) {
             if (!isContractReady()) {
                 return;
@@ -1242,46 +1501,51 @@
             
             try {
                 const numericId = parseInt(cropId.replace('C', ''));
-                const existingCrop = await contract.methods.getDrugDetails(numericId).call();
+                const cropCount = await contract.methods.getCropCountByType(numericId).call();
                 
-                if (existingCrop && existingCrop[3] !== "0x0000000000000000000000000000000000000000") {
-                    // Crop is already registered
-                    const cropSelect = document.getElementById("cropName");
-                    const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+                const cropSelect = document.getElementById("cropName");
+                const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+                
+                if (parseInt(cropCount) > 0) {
+                    // Crop type has been registered before
+                    selectedOption.style.backgroundColor = "#e8f5e8";
+                    selectedOption.style.color = "#2e7d32";
+                    selectedOption.title = `${cropCount} batch(es) already registered for this crop type`;
                     
-                    // Add visual indicator
-                    selectedOption.style.backgroundColor = "#ffebee";
-                    selectedOption.style.color = "#c62828";
-                    selectedOption.title = `Already registered by ${existingCrop[3]}`;
-                    
-                    // Show warning message
+                    // Show info message
                     const warningDiv = document.getElementById("cropWarning") || createCropWarning();
                     warningDiv.innerHTML = `
-                        <div style="background: rgba(255, 193, 7, 0.1); padding: 0.5rem; border-radius: 8px; border-left: 4px solid #ffc107; margin-top: 0.5rem;">
-                            <strong>⚠️ Warning:</strong> ${cropId} (${selectedOption.textContent}) is already registered by ${existingCrop[3].slice(0, 10)}...
-                            <br><strong>💡 Tip:</strong> Select a different crop type to register.
+                        <div style="background: rgba(76, 175, 80, 0.1); padding: 0.5rem; border-radius: 8px; border-left: 4px solid #4caf50; margin-top: 0.5rem;">
+                            <strong>✅ Good News:</strong> ${cropId} (${selectedOption.textContent}) can be registered multiple times!
+                            <br><strong>📊 Current batches:</strong> ${cropCount} batch(es) already registered
+                            <br><strong>💡 Tip:</strong> Each registration needs a unique batch number.
                         </div>
                     `;
                     warningDiv.style.display = "block";
                 } else {
-                    // Crop is available
-                    const cropSelect = document.getElementById("cropName");
-                    const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+                    // Crop type has never been registered
+                    selectedOption.style.backgroundColor = "#e3f2fd";
+                    selectedOption.style.color = "#1976d2";
+                    selectedOption.title = "New crop type - first registration";
                     
-                    // Remove visual indicators
-                    selectedOption.style.backgroundColor = "";
-                    selectedOption.style.color = "";
-                    selectedOption.title = "Available for registration";
-                    
-                    // Hide warning
-                    const warningDiv = document.getElementById("cropWarning");
-                    if (warningDiv) {
-                        warningDiv.style.display = "none";
-                    }
+                    // Show info message
+                    const warningDiv = document.getElementById("cropWarning") || createCropWarning();
+                    warningDiv.innerHTML = `
+                        <div style="background: rgba(33, 150, 243, 0.1); padding: 0.5rem; border-radius: 8px; border-left: 4px solid #2196f3; margin-top: 0.5rem;">
+                            <strong>🆕 New Crop Type:</strong> ${cropId} (${selectedOption.textContent}) has never been registered before!
+                            <br><strong>💡 Tip:</strong> You can register this crop type multiple times with different batch numbers.
+                        </div>
+                    `;
+                    warningDiv.style.display = "block";
                 }
             } catch (error) {
-                // Crop not found, which means it's available
-                console.log("Crop ID is available for registration");
+                // Error checking, assume available
+                console.log("Error checking crop availability:", error);
+                const cropSelect = document.getElementById("cropName");
+                const selectedOption = cropSelect.options[cropSelect.selectedIndex];
+                selectedOption.style.backgroundColor = "";
+                selectedOption.style.color = "";
+                selectedOption.title = "Available for registration";
             }
         }
 
@@ -1385,10 +1649,11 @@
                     
                     // Test contract connection
                     try {
-                        await contract.methods.drugCount().call();
-                        console.log("Contract connection verified");
+                        const totalRegistrations = await contract.methods.getTotalRegistrations().call();
+                        console.log("Contract connection verified, total registrations:", totalRegistrations);
                     } catch (contractError) {
                         console.warn("Contract connection test failed:", contractError);
+                        console.warn("This might be due to network issues or contract not being fully deployed");
                         // Continue anyway, as the contract might still work for other methods
                     }
                     
@@ -1448,24 +1713,8 @@
             }
 
             try {
-                // Get state code (first two characters)
-                const stateCode = stateCodes[state];
-                if (!stateCode) {
-                    throw new Error("Invalid state selected");
-                }
-
-                // Get current date in DDMMYY format
-                const now = new Date();
-                const day = String(now.getDate()).padStart(2, '0');
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const year = String(now.getFullYear()).slice(-2);
-                const dateString = day + month + year;
-
-                // Get last 4 characters of wallet address
-                const walletSuffix = userAccount.slice(-4).toUpperCase();
-
-                // Construct batch number: [StateCode]-[DistrictCode]-[PostOfficeNumber]-[Date]-[Last4Wallet]
-                const batchNumber = `${stateCode}-${districtCode}-${postOfficeNumber}-${dateString}-${walletSuffix}`;
+                // Generate unique batch number
+                const batchNumber = generateUniqueBatchNumber();
 
                 // Display generated batch number
                 document.getElementById("generatedBatch").innerHTML = `
@@ -1486,19 +1735,110 @@
             }
         }
 
+        // Function to generate a completely unique batch number with timestamp and random elements
+        function generateUniqueBatchNumber() {
+            // Get form values
+            const state = document.getElementById("stateSelect").value;
+            const districtCode = document.getElementById("districtCode").value;
+            const postOfficeNumber = document.getElementById("postOfficeNumber").value;
+
+            // Use default values if location fields are not filled
+            let stateCode, finalDistrictCode, finalPostOfficeNumber;
+            
+            if (state && districtCode && postOfficeNumber) {
+                // Get state code (first two characters)
+                stateCode = stateCodes[state];
+                if (!stateCode) {
+                    throw new Error("Invalid state selected");
+                }
+                finalDistrictCode = districtCode;
+                finalPostOfficeNumber = postOfficeNumber;
+            } else {
+                // Use default values for automatic generation
+                stateCode = "XX";
+                finalDistrictCode = "00";
+                finalPostOfficeNumber = "000";
+            }
+
+            // Get current date and time for maximum uniqueness
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = String(now.getFullYear()).slice(-2);
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const milliseconds = String(now.getMilliseconds()).padStart(3, '0');
+            
+            // Create timestamp string: DDMMYYHHMMSSMMM
+            const timestamp = day + month + year + hours + minutes + seconds + milliseconds;
+
+            // Get last 4 characters of wallet address for user identification
+            const walletSuffix = userAccount ? userAccount.slice(-4).toUpperCase() : "XXXX";
+
+            // Generate random 4-character code for extra uniqueness
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let randomCode = '';
+            for (let i = 0; i < 4; i++) {
+                randomCode += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+
+            // Construct unique batch number: [StateCode]-[DistrictCode]-[PostOfficeNumber]-[Timestamp]-[WalletSuffix]-[Random]
+            const batchNumber = `${stateCode}-${finalDistrictCode}-${finalPostOfficeNumber}-${timestamp}-${walletSuffix}-${randomCode}`;
+
+            return batchNumber;
+        }
+
+        // Function to automatically generate batch number when location fields are filled
+        function autoGenerateBatchNumber() {
+            const state = document.getElementById("stateSelect").value;
+            const districtCode = document.getElementById("districtCode").value;
+            const postOfficeNumber = document.getElementById("postOfficeNumber").value;
+            
+            // Only auto-generate if all location fields are filled and user is connected
+            if (state && districtCode && postOfficeNumber && userAccount) {
+                generateBatchNumber();
+            }
+        }
+
         async function registerCrop() {
             const cropId = document.getElementById("cropId").value;
             const cropName = document.getElementById("cropName").value;
             const cropManufacturer = document.getElementById("cropManufacturer").value;
             const cropQuantity = document.getElementById("cropQuantity").value;
-            const cropBatchNumber = document.getElementById("cropBatchNumber").value;
+            let cropBatchNumber = document.getElementById("cropBatchNumber").value;
             const cropPrice = document.getElementById("cropPrice").value;
 
             // Validation
-            if (!cropId || !cropName || !cropManufacturer || !cropQuantity || !cropBatchNumber || !cropPrice) {
+            if (!cropId || !cropName || !cropManufacturer || !cropQuantity || !cropPrice) {
                 document.getElementById("output").innerText = "Please fill in all required fields including quantity and price!";
                 document.getElementById("output").classList.add("error");
                 return;
+            }
+
+            // Auto-generate batch number if not provided
+            if (!cropBatchNumber || cropBatchNumber.trim() === "") {
+                console.log("No batch number provided, auto-generating...");
+                try {
+                    cropBatchNumber = generateUniqueBatchNumber();
+                    document.getElementById("cropBatchNumber").value = cropBatchNumber;
+                    
+                    // Show auto-generated batch number
+                    document.getElementById("generatedBatch").innerHTML = `
+                        <strong>Auto-Generated Batch Number:</strong><br>
+                        <span style="font-family: monospace; font-size: 18px; color: #514caf;">${cropBatchNumber}</span>
+                    `;
+                    document.getElementById("generatedBatch").classList.remove("error");
+                    document.getElementById("generatedBatch").classList.add("success");
+                    document.getElementById("generatedBatch").style.display = "block";
+                    
+                    console.log("Auto-generated batch number:", cropBatchNumber);
+                } catch (error) {
+                    console.error("Error auto-generating batch number:", error);
+                    document.getElementById("output").innerText = "Error generating batch number: " + error.message;
+                    document.getElementById("output").classList.add("error");
+                    return;
+                }
             }
 
             document.getElementById("output").innerText = "Processing... Please wait.";
@@ -1507,29 +1847,28 @@
                 // Convert crop ID to a unique number for smart contract
                 const numericId = parseInt(cropId.replace('C', '')); // Convert C001 to 1, C002 to 2, etc.
                 
-                // Check if crop ID is already registered
+                // Check if batch number already exists (new contract uses batch number as unique key)
+                let batchExists = false;
                 try {
-                    const existingCrop = await contract.methods.getDrugDetails(numericId).call();
-                    if (existingCrop && existingCrop[3] !== "0x0000000000000000000000000000000000000000") {
-                        document.getElementById("output").innerHTML = `
-                            <div style="background: rgba(220, 53, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #dc3545;">
-                                <h4 style="color: #dc3545; margin: 0 0 1rem 0;">❌ Crop ID Already Registered</h4>
-                                <p><strong>Crop ID ${cropId} (${cropName}) is already registered!</strong></p>
-                                <p><strong>Current Owner:</strong> ${existingCrop[3]}</p>
-                                <p><strong>Current Manufacturer:</strong> ${existingCrop[1]}</p>
-                                <p><strong>Current Batch:</strong> ${existingCrop[2]}</p>
-                                <br>
-                                <p><strong>💡 Solution:</strong> Please select a different crop type from the dropdown above. 
-                                Each crop type has a unique ID, and you can only register each type once.</p>
-                                <p><strong>Available crops:</strong> Try selecting Wheat (C002), Maize (C003), Barley (C004), etc.</p>
-                            </div>
-                        `;
-                        document.getElementById("output").classList.add("error");
-                        return;
-                    }
-                } catch (checkError) {
-                    // Crop not found, which is good - we can proceed
-                    console.log("Crop ID is available for registration");
+                    batchExists = await contract.methods.batchExists(cropBatchNumber).call();
+                    console.log("Batch exists check result:", batchExists);
+                } catch (batchCheckError) {
+                    console.error("Error checking batch existence:", batchCheckError);
+                    // If batch check fails, we'll proceed with registration and let the contract handle it
+                    console.log("Proceeding with registration despite batch check error");
+                }
+                
+                if (batchExists) {
+                    document.getElementById("output").innerHTML = `
+                        <div style="background: rgba(220, 53, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #dc3545;">
+                            <h4 style="color: #dc3545; margin: 0 0 1rem 0;">❌ Batch Number Already Exists</h4>
+                            <p><strong>Batch Number "${cropBatchNumber}" is already registered!</strong></p>
+                            <p><strong>💡 Solution:</strong> Please generate a new batch number by clicking "Generate Batch Number" again.</p>
+                            <p><strong>Note:</strong> Each batch number must be unique across all crops.</p>
+                        </div>
+                    `;
+                    document.getElementById("output").classList.add("error");
+                    return;
                 }
                 
                 // Generate farmer ID
@@ -1537,7 +1876,7 @@
                 
                 // Store comprehensive crop data in localStorage
                 const cropData = {
-                    id: numericId,
+                    cropTypeId: numericId,
                     name: cropName,
                     manufacturer: cropManufacturer,
                     farmerId: farmerId,
@@ -1554,22 +1893,43 @@
                 };
                 
                 // Store in localStorage with a unique key
-                const storageKey = `crop_${numericId}_${Date.now()}`;
+                const storageKey = `crop_${cropBatchNumber}_${Date.now()}`;
                 localStorage.setItem(storageKey, JSON.stringify(cropData));
                 
-                await contract.methods.registerDrug(numericId, cropName, cropManufacturer, cropBatchNumber)
-                    .send({ from: userAccount });
+                // Register crop with new contract (allows multiple registrations of same crop type)
+                console.log("Attempting to register crop with parameters:", {
+                    cropTypeId: numericId,
+                    name: cropName,
+                    manufacturer: cropManufacturer,
+                    batchNumber: cropBatchNumber,
+                    quantity: parseFloat(cropQuantity),
+                    price: parseFloat(cropPrice)
+                });
+                
+                const tx = await contract.methods.registerCrop(
+                    numericId,           // cropTypeId
+                    cropName,            // name
+                    cropManufacturer,    // manufacturer
+                    cropBatchNumber,     // batchNumber
+                    parseFloat(cropQuantity), // quantity
+                    parseFloat(cropPrice)     // price
+                ).send({ from: userAccount });
+                
+                console.log("Registration transaction successful:", tx);
                 
                 document.getElementById("output").innerHTML = `
                     <div style="background: rgba(40, 167, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #28a745;">
                         <h4 style="color: #28a745; margin: 0 0 1rem 0;">✅ Crop Registered Successfully!</h4>
-                        <p><strong>Crop ID:</strong> ${cropId}</p>
+                        <p><strong>Crop Type ID:</strong> ${cropId}</p>
                         <p><strong>Crop Name:</strong> ${cropName}</p>
                         <p><strong>Farmer ID:</strong> ${farmerId}</p>
                         <p><strong>Quantity:</strong> ${cropQuantity}kg</p>
                         <p><strong>Price:</strong> ₹${cropPrice}</p>
-                        <p><strong>Batch Number:</strong> ${cropBatchNumber}</p>
+                        <p><strong>Unique Batch Number:</strong> ${cropBatchNumber}</p>
                         <p><strong>Owner:</strong> ${userAccount}</p>
+                        <br>
+                        <p><strong>🎉 Great News:</strong> You can now register the same crop type multiple times! Each registration gets a unique batch number automatically.</p>
+                        <p><strong>🔄 Next Registration:</strong> Simply register again with the same crop type to get another unique batch number.</p>
                     </div>
                 `;
                 document.getElementById("output").classList.add("success");
@@ -1584,17 +1944,16 @@
                 console.error("Registration error:", error);
                 let errorMessage = "Error registering crop: ";
                 
-                if (error.message.includes("Drug already registered")) {
+                if (error.message.includes("Batch number already exists")) {
                     errorMessage = `
                         <div style="background: rgba(220, 53, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #dc3545;">
-                            <h4 style="color: #dc3545; margin: 0 0 1rem 0;">❌ Crop Already Registered</h4>
-                            <p><strong>This crop type has already been registered!</strong></p>
-                            <p><strong>💡 Solution:</strong> Please select a different crop type from the dropdown above.</p>
-                            <p><strong>Available options:</strong> Try Wheat (C002), Maize (C003), Barley (C004), etc.</p>
+                            <h4 style="color: #dc3545; margin: 0 0 1rem 0;">❌ Batch Number Already Exists</h4>
+                            <p><strong>This batch number is already registered!</strong></p>
+                            <p><strong>💡 Solution:</strong> Generate a new batch number by clicking "Generate Batch Number" again.</p>
                         </div>
                     `;
                 } else if (error.message.includes("execution reverted")) {
-                    errorMessage += "Transaction failed. The crop may already be registered or there was a contract error.";
+                    errorMessage += "Transaction failed. Please check your inputs and try again.";
                 } else if (error.message.includes("user rejected")) {
                     errorMessage += "Transaction was cancelled by user.";
                 } else if (error.message.includes("insufficient funds")) {
@@ -1610,11 +1969,11 @@
         }
 
         async function getCropDetailsById() {
-            const cropId = parseInt(document.getElementById("cropIdForDetails").value);
+            const batchNumber = document.getElementById("cropIdForDetails").value.trim();
             
             // Validate input
-            if (!cropId || isNaN(cropId)) {
-                document.getElementById("output").innerText = "Please enter a valid crop ID";
+            if (!batchNumber) {
+                document.getElementById("output").innerText = "Please enter a batch number";
                 document.getElementById("output").classList.add("error");
                 return;
             }
@@ -1633,23 +1992,29 @@
                 document.getElementById("output").innerText = "Loading crop details...";
                 document.getElementById("output").classList.remove("error", "success");
                 
-                const crop = await contract.methods.getDrugDetails(cropId).call();
+                const crop = await contract.methods.getCropByBatch(batchNumber).call();
                 
-                // Check if crop exists (owner should not be zero address)
-                if (!crop || crop[3] === "0x0000000000000000000000000000000000000000") {
-                    document.getElementById("output").innerText = "Crop not found with ID: " + cropId;
+                // Check if crop exists
+                if (!crop || crop[3] === "") {
+                    document.getElementById("output").innerText = "Crop not found with batch number: " + batchNumber;
                     document.getElementById("output").classList.add("error");
                     return;
                 }
 
+                // Convert timestamp to readable date
+                const registrationDate = new Date(parseInt(crop[5]) * 1000).toLocaleDateString();
+
                 document.getElementById("output").innerHTML = `
                     <div style="background: rgba(40, 167, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #28a745;">
                         <h4 style="color: #28a745; margin: 0 0 1rem 0;">✅ Crop Details Found</h4>
-                        <p><strong>Name:</strong> ${crop[0] || 'N/A'}</p>
-                        <p><strong>Producer:</strong> ${crop[1] || 'N/A'}</p>
-                        <p><strong>Batch Number:</strong> ${crop[2] || 'N/A'}</p>
-                        <p><strong>Owner:</strong> ${crop[3] || 'N/A'}</p>
-                        <p><strong>Crop ID:</strong> ${cropId}</p>
+                        <p><strong>Crop Type ID:</strong> C${crop[0].toString().padStart(3, '0')}</p>
+                        <p><strong>Name:</strong> ${crop[1] || 'N/A'}</p>
+                        <p><strong>Producer:</strong> ${crop[2] || 'N/A'}</p>
+                        <p><strong>Batch Number:</strong> ${crop[3] || 'N/A'}</p>
+                        <p><strong>Owner:</strong> ${crop[4] || 'N/A'}</p>
+                        <p><strong>Registration Date:</strong> ${registrationDate}</p>
+                        <p><strong>Quantity:</strong> ${crop[6] || 'N/A'} kg</p>
+                        <p><strong>Price:</strong> ₹${crop[7] || 'N/A'}</p>
                     </div>
                 `;
                 document.getElementById("output").classList.add("success");
@@ -1674,13 +2039,13 @@
         }
 
         async function transferOwnership() {
-            const cropId = parseInt(document.getElementById("transferId").value);
+            const batchNumber = document.getElementById("transferId").value.trim();
             const newOwner = document.getElementById("newOwner").value;
             const newOwnerName = document.getElementById("newOwnerName").value;
             
             // Validate inputs
-            if (!cropId || isNaN(cropId)) {
-                document.getElementById("output").innerText = "Please enter a valid crop ID";
+            if (!batchNumber) {
+                document.getElementById("output").innerText = "Please enter a valid batch number";
                 document.getElementById("output").classList.add("error");
                 return;
             }
@@ -1710,17 +2075,17 @@
                 // Use different contract methods based on whether new owner name is provided
                 if (newOwnerName && newOwnerName.trim() !== "") {
                     // Transfer ownership and update manufacturer name
-                    transaction = await contract.methods.transferOwnershipWithName(cropId, newOwner, newOwnerName.trim()).send({ from: userAccount });
+                    transaction = await contract.methods.transferOwnershipWithName(batchNumber, newOwner, newOwnerName.trim()).send({ from: userAccount });
                 } else {
                     // Just transfer ownership without changing manufacturer name
-                    transaction = await contract.methods.transferOwnership(cropId, newOwner).send({ from: userAccount });
+                    transaction = await contract.methods.transferOwnership(batchNumber, newOwner).send({ from: userAccount });
                 }
                 
                 // Create success message based on what was updated
                 let successMessage = `
                     <div style="background: rgba(40, 167, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #28a745;">
                         <h4 style="color: #28a745; margin: 0 0 1rem 0;">✅ Ownership Transferred Successfully</h4>
-                        <p><strong>Crop ID:</strong> ${cropId}</p>
+                        <p><strong>Batch Number:</strong> ${batchNumber}</p>
                         <p><strong>New Owner Address:</strong> ${newOwner}</p>
                         <p><strong>Previous Owner:</strong> ${userAccount}</p>
                 `;
@@ -1765,12 +2130,12 @@
 
         // Function to update manufacturer name only
         async function updateManufacturerName() {
-            const cropId = parseInt(document.getElementById("updateNameCropId").value);
+            const batchNumber = document.getElementById("updateNameCropId").value.trim();
             const newManufacturerName = document.getElementById("newManufacturerName").value;
             
             // Validate inputs
-            if (!cropId || isNaN(cropId)) {
-                document.getElementById("output").innerText = "Please enter a valid crop ID";
+            if (!batchNumber) {
+                document.getElementById("output").innerText = "Please enter a valid batch number";
                 document.getElementById("output").classList.add("error");
                 return;
             }
@@ -1795,12 +2160,12 @@
                 document.getElementById("output").innerText = "Updating manufacturer name...";
                 document.getElementById("output").classList.remove("error", "success");
                 
-                await contract.methods.updateManufacturer(cropId, newManufacturerName.trim()).send({ from: userAccount });
+                await contract.methods.updateManufacturer(batchNumber, newManufacturerName.trim()).send({ from: userAccount });
                 
                 document.getElementById("output").innerHTML = `
                     <div style="background: rgba(40, 167, 69, 0.1); padding: 1rem; border-radius: 8px; border-left: 4px solid #28a745;">
                         <h4 style="color: #28a745; margin: 0 0 1rem 0;">✅ Manufacturer Name Updated Successfully</h4>
-                        <p><strong>Crop ID:</strong> ${cropId}</p>
+                        <p><strong>Batch Number:</strong> ${batchNumber}</p>
                         <p><strong>New Manufacturer Name:</strong> ${newManufacturerName.trim()}</p>
                         <p><strong>Owner:</strong> ${userAccount}</p>
                         <p><em>Manufacturer/Producer name has been updated on the blockchain</em></p>
@@ -1855,8 +2220,8 @@
                 // Create QR code data structure
                 const qrData = {
                     type: "Croponchain",
-                    version: "1.0",
-                    cropId: `C${cropData.id.toString().padStart(3, '0')}`,
+                    version: "2.0",
+                    cropTypeId: `C${cropData.cropTypeId.toString().padStart(3, '0')}`,
                     cropName: cropData.name,
                     farmerName: cropData.manufacturer,
                     farmerId: cropData.farmerId,
@@ -1931,7 +2296,8 @@
                 if (cropData) {
                     const qrString = JSON.stringify({
                         type: "Croponchain",
-                        cropId: `C${cropData.id.toString().padStart(3, '0')}`,
+                        version: "2.0",
+                        cropTypeId: `C${cropData.cropTypeId.toString().padStart(3, '0')}`,
                         cropName: cropData.name,
                         farmerName: cropData.manufacturer,
                         farmerId: cropData.farmerId,
@@ -2071,6 +2437,11 @@
             document.getElementById("connectBtn").addEventListener("click", initWeb3);
             document.getElementById("cropName").addEventListener("change", handleCropSelection);
             document.getElementById("generateBatchBtn").addEventListener("click", generateBatchNumber);
+            
+            // Add event listeners for automatic batch number generation
+            document.getElementById("stateSelect").addEventListener("change", autoGenerateBatchNumber);
+            document.getElementById("districtCode").addEventListener("input", autoGenerateBatchNumber);
+            document.getElementById("postOfficeNumber").addEventListener("input", autoGenerateBatchNumber);
             document.getElementById("registerCropBtn").addEventListener("click", registerCrop);
             document.getElementById("generateQRBtn").addEventListener("click", generateQRCode);
             document.getElementById("testQRBtn").addEventListener("click", testQRLibrary);

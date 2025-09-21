@@ -525,189 +525,149 @@
 
     <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
     <script>
-        const contractAddress = "0x65Fd97e0AC9601f7C2f06637B8F33B7C49DB2A07"; 
-        const contractABI = [{
-      "inputs": [],
-      "name": "drugCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "drugs",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "manufacturer",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "batchNumber",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAllRegisteredDrugs",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        }
-      ],
-      "name": "getDrugDetails",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        },
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_manufacturer",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_batchNumber",
-          "type": "string"
-        }
-      ],
-      "name": "registerDrug",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "_newOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "string",
-          "name": "_newManufacturer",
-          "type": "string"
-        }
-      ],
-      "name": "transferOwnershipWithName",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_id",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "_newManufacturer",
-          "type": "string"
-        }
-      ],
-      "name": "updateManufacturer",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ];
+        const contractAddress = "0xDb1dEd4afBf9162a53B0B8A4989554943FB755b4"; 
+        const contractABI = [
+  {
+    "inputs": [],
+    "name": "getAllBatchNumbers",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      }
+    ],
+    "name": "getCropByBatch",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "cropTypeId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "manufacturer",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "registrationTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "quantity",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_cropTypeId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getBatchesByCropType",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalRegistrations",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_batchNumber",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "_newManufacturer",
+        "type": "string"
+      }
+    ],
+    "name": "transferOwnershipWithName",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
 
         // Standardized crop database with unique IDs
         const cropDatabase = [
@@ -852,7 +812,7 @@
                     
                     // Test contract connection
                     try {
-                        await contract.methods.drugCount().call();
+                        await contract.methods.getTotalRegistrations().call();
                         console.log("Marketplace contract connection verified");
                     } catch (contractError) {
                         console.warn("Marketplace contract connection test failed:", contractError);
@@ -959,54 +919,41 @@
                     return;
                 }
 
-                // Get all registered crops from blockchain
-                const allRegisteredIds = await contract.methods.getAllRegisteredDrugs().call();
+                // Get all registered crops from blockchain using new contract
+                const allBatchNumbers = await contract.methods.getAllBatchNumbers().call();
                 
                 // Filter crops by the selected crop type
                 const matchingCrops = [];
                 
-                for (let i = 0; i < allRegisteredIds.length; i++) {
-                    const cropId = allRegisteredIds[i];
-                    const cropDetails = await contract.methods.getDrugDetails(cropId).call();
-                    
-                    // Check if this crop matches our selected crop type by comparing the crop ID
-                    if (parseInt(cropId) === numericId) {
-                        matchingCrops.push({
-                            id: cropId,
-                            name: cropDetails[0], // cropDetails[0] is the name
-                            manufacturer: cropDetails[1], // cropDetails[1] is the manufacturer
-                            batchNumber: cropDetails[2], // cropDetails[2] is the batch number
-                            owner: cropDetails[3] // cropDetails[3] is the owner
-                        });
+                for (const batchNumber of allBatchNumbers) {
+                    try {
+                        const cropDetails = await contract.methods.getCropByBatch(batchNumber).call();
+                        
+                        // Check if this crop matches our selected crop type by comparing the crop type ID
+                        if (parseInt(cropDetails[0]) === numericId) {
+                            const registrationDate = new Date(parseInt(cropDetails[5]) * 1000).toLocaleDateString();
+                            
+                            matchingCrops.push({
+                                batchNumber: batchNumber,
+                                cropTypeId: cropDetails[0],
+                                name: cropDetails[1], // cropDetails[1] is the name
+                                manufacturer: cropDetails[2], // cropDetails[2] is the manufacturer
+                                owner: cropDetails[4], // cropDetails[4] is the owner
+                                registrationDate: registrationDate,
+                                quantity: cropDetails[6],
+                                price: cropDetails[7]
+                            });
+                        }
+                    } catch (error) {
+                        console.warn(`Error loading crop ${batchNumber}:`, error);
                     }
                 }
 
-                // Get price data from localStorage
-                const cropsWithPrices = [];
-                for (let key in localStorage) {
-                    if (key.startsWith('crop_')) {
-                        try {
-                            const cropData = JSON.parse(localStorage.getItem(key));
-                            if (cropData.id === numericId) {
-                                // Find matching blockchain data
-                                const blockchainData = matchingCrops.find(crop => 
-                                    crop.manufacturer === cropData.manufacturer && 
-                                    crop.batchNumber === cropData.batchNumber
-                                );
-                                
-                                if (blockchainData) {
-                                    cropsWithPrices.push({
-                                        ...blockchainData,
-                                        price: cropData.price,
-                                        timestamp: cropData.timestamp
-                                    });
-                                }
-                            }
-                        } catch (e) {
-                            // Skip invalid data
-                        }
-                    }
-                }
+                // Use blockchain data directly (new contract includes price and quantity)
+                const cropsWithPrices = matchingCrops.map(crop => ({
+                    ...crop,
+                    timestamp: new Date().toISOString() // Use current timestamp as fallback
+                }));
 
                 // Hide loading message
                 document.getElementById("loadingMessage").style.display = "none";
@@ -1035,7 +982,6 @@
                     let html = "";
                     
                     cropsWithPrices.forEach((crop, index) => {
-                        const date = new Date(crop.timestamp).toLocaleDateString();
                         const isLowestPrice = crop.price === minPrice;
                         const priceClass = isLowestPrice ? "price-tag" : "price-tag";
                         const priceStyle = isLowestPrice ? "background-color: #28a745;" : "";
@@ -1043,11 +989,12 @@
                         html += `
                             <div class="marketplace-card">
                                 <h4>Farmer ${index + 1} ${isLowestPrice ? '🏆 (Best Price)' : ''}</h4>
-                                <div class="${priceClass}" style="${priceStyle}">₹${crop.price} per unit</div>
+                                <div class="${priceClass}" style="${priceStyle}">₹${crop.price} per kg</div>
                                 <div class="farmer-info"><strong>Farmer:</strong> ${crop.manufacturer}</div>
+                                <div class="farmer-info"><strong>Quantity:</strong> ${crop.quantity} kg</div>
                                 <div class="farmer-info"><strong>Owner Address:</strong> ${crop.owner}</div>
                                 <div class="batch-info"><strong>Batch Number:</strong> ${crop.batchNumber}</div>
-                                <div class="farmer-info"><strong>Registered:</strong> ${date}</div>
+                                <div class="farmer-info"><strong>Registered:</strong> ${crop.registrationDate}</div>
                                 <button class="button contact-button" onclick="copyAddress('${crop.owner}')">📋 Copy Address</button>
                             </div>
                         `;
